@@ -1,25 +1,17 @@
 <template>
     <q-page class="index-outer">
-        <div class="side-outer">
-            <SketchList :sketches="sketches" :selectedIndex="selected" @selected="selectedSketch"/>
-        </div>
-        <div id="canvas-container" />
-        <div class="side-outer">
-            <!-- Add author name and contact -->
-            <SketchDetails :sketch="sketches[selected]" />
-        </div>
+        <CenteredLayout v-if="style === 'centered'"
+            :selectedSketch="sketches[selected]" :sketches="sketches" @selected="selectedSketch" />
     </q-page>
 </template>
 
 <script>
 import P5 from 'p5'
-import SketchList from 'components/SketchList.vue'
-import SketchDetails from 'components/SketchDetails.vue'
+import CenteredLayout from '../gallery-layouts/CenteredLayout.vue'
 export default {
     name: 'PageIndex',
     components: {
-        SketchList,
-        SketchDetails
+        CenteredLayout
     },
     methods: {
         selectedSketch (val) {
@@ -39,6 +31,7 @@ export default {
     data () {
         return {
             selected: 0,
+            style: 'centered',
             sketches: [
                 {
                     name: 'Ball of Ball',
@@ -146,20 +139,18 @@ export default {
 * {
     font-family: 'Roboto Mono', monospace;
 }
-.index-outer {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-}
-.side-outer {
-    width: 300px;
-    height: 100%;
-}
 #canvas-container {
     width: 600px;
     height: 600px;
     background: black;
     margin: 0px 10px;
+}
+.index-outer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }
 </style>
