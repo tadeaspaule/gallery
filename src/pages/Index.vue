@@ -63,20 +63,39 @@ export default {
                 {
                     name: 'Divide',
                     script: function (p5) {
-                        var x = 50
-                        var grow = true
+                        var bars = []
                         p5.setup = _ => {
                             var canvas = p5.createCanvas(600, 600)
                             canvas.parent('canvas-container')
-                            p5.frameRate(30)
+                            p5.frameRate(20)
+                            p5.noStroke()
                         }
                         p5.draw = _ => {
                             p5.background(0)
-                            p5.ellipse(300, 300, x, x)
-                            if (grow) x += 1
-                            else x -= 1
-                            if (x > 200) grow = false
-                            if (x < 50) grow = true
+                            var x = 0
+                            var y = 0
+                            var goingRight = true
+                            var reachedTop = false
+                            bars.forEach(b => {
+                                p5.fill(b.r, b.g, b.b)
+                                y += b.h
+                                if (y > 700) reachedTop = true
+                                p5.rect(goingRight ? x : x - b.w, 600 - y, b.w, y)
+                                if (goingRight) x += b.w
+                                else x -= b.w
+                                if (x > 600 || x < 0) goingRight = !goingRight
+                            })
+                            if (reachedTop) {
+                                bars = []
+                                p5.background(0)
+                            }
+                            bars.push({
+                                h: p5.random(5, 40),
+                                w: p5.random(20, 60),
+                                r: p5.random(255),
+                                g: p5.random(255),
+                                b: p5.random(255)
+                            })
                         }
                     }
                 },
