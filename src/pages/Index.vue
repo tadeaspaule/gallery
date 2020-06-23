@@ -126,6 +126,59 @@ export default {
                             }
                         }
                     }
+                },
+                {
+                    name: 'Orbit Orbit',
+                    script: function (p5) {
+                        var n = 6
+                        var planets = []
+                        var moons = []
+                        p5.move = (x) => {
+                            x.x = x.orbitAround.x + x.r * p5.cos(x.rads)
+                            x.y = x.orbitAround.y + x.r * p5.sin(x.rads)
+                            x.rads += x.orbitSpeed
+                            if (x.rads > 6.3) x.rads -= p5.PI * 2
+                        }
+                        p5.setup = _ => {
+                            var canvas = p5.createCanvas(600, 600)
+                            canvas.parent('canvas-container')
+                            p5.frameRate(20)
+                            p5.background(0)
+                            p5.stroke(255)
+                            p5.noFill()
+                            for (var i = 0; i < n; i++) {
+                                var p = {
+                                    x: 0,
+                                    y: 0,
+                                    orbitSpeed: p5.random(0.03, 0.2),
+                                    r: p5.random(30, 250),
+                                    rads: p5.random(0, 6.28),
+                                    orbitAround: { x: 300, y: 300 }
+                                }
+                                var m = {
+                                    x: 0,
+                                    y: 0,
+                                    orbitSpeed: p5.random(0.03, 0.2),
+                                    r: p5.random(10, 45),
+                                    rads: p5.random(0, 6.28),
+                                    orbitAround: p
+                                }
+                                p5.move(p)
+                                p5.move(m)
+                                planets.push(p)
+                                moons.push(m)
+                            }
+                        }
+                        p5.draw = _ => {
+                            p5.background(0)
+                            planets.forEach(p => p5.move(p))
+                            moons.forEach(m => {
+                                var d = p5.dist(300, 300, m.x, m.y)
+                                p5.ellipse(300, 300, d * 2, d * 2)
+                                p5.move(m)
+                            })
+                        }
+                    }
                 }
             ]
         }
