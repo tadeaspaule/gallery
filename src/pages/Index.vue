@@ -144,7 +144,7 @@ export default {
                     }
                 },
                 {
-                    name: 'Orbit Orbit',
+                    name: 'Orbit Music',
                     script: function (p5) {
                         var n = 6
                         var planets = []
@@ -197,7 +197,7 @@ export default {
                     }
                 },
                 {
-                    name: 'Squeezr',
+                    name: 'Just lines',
                     script: function (p5) {
                         var n = 4
                         var planets = []
