@@ -34,22 +34,56 @@ export default {
             style: 'centered',
             sketches: [
                 {
-                    name: 'Ball of Ball',
+                    name: 'Wormhole',
                     script: function (p5) {
-                        var x = 50
-                        var grow = true
+                        var n = 20
+                        var r = 160
+                        var cx = 300
+                        var cy = 300
+                        var c2x = 350
+                        var c2y = 350
+                        var col = [255, 0, 0]
+                        var col2 = [0, 0, 255]
+                        var padding = 160
+                        var i = 0
+
                         p5.setup = _ => {
                             var canvas = p5.createCanvas(600, 600)
                             canvas.parent('canvas-container')
-                            p5.frameRate(30)
+                            p5.background(0)
+                            p5.noStroke()
+                            p5.fill(255)
+                            p5.frameRate(20)
+                        }
+                        p5.movecenter = _ => {
+                            if (cx === c2x) c2x = p5.floor(p5.random(padding, 600 - padding))
+                            else if (cx > c2x) cx--
+                            else cx++
+                            if (cy === c2y) c2y = p5.floor(p5.random(padding, 600 - padding))
+                            else if (cy > c2y) cy--
+                            else cy++
+                        }
+                        p5.changefill = _ => {
+                            for (var j = 0; j < 3; j++) {
+                                if (col[j] === col2[j]) col2[j] = p5.floor(p5.random(256))
+                                else if (col[j] > col2[j]) col[j]--
+                                else col[j]++
+                            }
                         }
                         p5.draw = _ => {
-                            p5.background(0)
-                            p5.ellipse(300, 300, x, x)
-                            if (grow) x += 1
-                            else x -= 1
-                            if (x > 200) grow = false
-                            if (x < 50) grow = true
+                            var rads1 = (p5.PI * 2) * (i / n)
+                            var rads2 = (p5.PI * 2) * ((i + 1) / n)
+                            var p1x = cx + r * p5.cos(rads1)
+                            var p1y = cy + r * p5.sin(rads1)
+                            var p2x = cx + r * p5.cos(rads2)
+                            var p2y = cy + r * p5.sin(rads2)
+                            var p3x = cx + r * 1.2 * p5.cos((rads1 + rads2) / 2)
+                            var p3y = cy + r * 1.2 * p5.sin((rads1 + rads2) / 2)
+                            p5.fill(col[0], col[1], col[2])
+                            p5.triangle(p1x, p1y, p2x, p2y, p3x, p3y)
+                            i = (i + 1) % n
+                            p5.movecenter()
+                            p5.changefill()
                         }
                     }
                 },
@@ -175,6 +209,67 @@ export default {
                             moons.forEach(m => {
                                 var d = p5.dist(300, 300, m.x, m.y)
                                 p5.ellipse(300, 300, d * 2, d * 2)
+                                p5.move(m)
+                            })
+                        }
+                    }
+                },
+                {
+                    name: 'Squeezr',
+                    script: function (p5) {
+                        var n = 4
+                        var planets = []
+                        var moons = []
+                        // var growing = true
+                        var factor = 1
+                        // var factorSpd = 0.01
+                        p5.move = (x) => {
+                            x.x = x.orbitAround.x + x.r * p5.cos(x.rads)
+                            x.y = x.orbitAround.y + x.r * p5.sin(x.rads) * factor
+                            x.rads += x.orbitSpeed
+                            if (x.rads > 6.3) x.rads -= p5.PI * 2
+                        }
+                        p5.setup = _ => {
+                            var canvas = p5.createCanvas(600, 600)
+                            canvas.parent('canvas-container')
+                            p5.frameRate(20)
+                            p5.background(0)
+                            p5.stroke(255)
+                            for (var i = 0; i < n; i++) {
+                                var p = {
+                                    x: 0,
+                                    y: 0,
+                                    orbitSpeed: p5.random(0.03, 0.2),
+                                    r: p5.random(30, 100),
+                                    rads: p5.random(0, 6.28),
+                                    orbitAround: { x: 300, y: 300 }
+                                }
+                                var m = {
+                                    x: 0,
+                                    y: 0,
+                                    orbitSpeed: p5.random(0.03, 0.2),
+                                    r: p5.random(60, 150),
+                                    rads: p5.random(0, 6.28),
+                                    orbitAround: p
+                                }
+                                p5.move(p)
+                                p5.move(m)
+                                planets.push(p)
+                                moons.push(m)
+                            }
+                            for (var j = 0; j < n / 2; j++) {
+                                moons[j].partner = moons[j + n / 2]
+                            }
+                        }
+                        p5.draw = _ => {
+                            // p5.background(0)
+                            // if (growing) factor += factorSpd
+                            // else factor -= factorSpd
+                            // if (factor >= 1) growing = false
+                            // else if (factor <= 0.6) growing = true
+                            planets.forEach(p => p5.move(p))
+                            moons.forEach(m => {
+                                if (m.partner) p5.line(m.x, m.y, m.partner.x, m.partner.y)
                                 p5.move(m)
                             })
                         }
