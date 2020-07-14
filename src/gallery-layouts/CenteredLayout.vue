@@ -11,10 +11,10 @@
         <div id="canvas-container" />
         <div class="side-outer">
             <!-- Add author name and contact -->
-            <div class="details-outer">
+            <!-- <div class="details-outer">
                 <h3>{{selectedSketch.name}}</h3>
                 <p>{{selectedSketch.description}}</p>
-            </div>
+            </div> -->
         </div>
     </div>
 </template>
