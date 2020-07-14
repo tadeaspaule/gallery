@@ -88,75 +88,57 @@ export default {
                     }
                 },
                 {
-                    name: 'Divide',
+                    name: 'Grid',
                     script: function (p5) {
-                        var bars = []
+                        var n = 10
+                        var points = []
+                        var spds = []
+                        var growing = []
+                        var minw = 10
+                        var gap = 50
+                        var space = 0
+
                         p5.setup = _ => {
                             var canvas = p5.createCanvas(600, 600)
                             canvas.parent('canvas-container')
-                            p5.frameRate(20)
-                            p5.noStroke()
-                        }
-                        p5.draw = _ => {
-                            p5.background(0)
-                            var x = 0
-                            var y = 0
-                            var goingRight = true
-                            var reachedTop = false
-                            bars.forEach(b => {
-                                p5.fill(b.r, b.g, b.b)
-                                y += b.h
-                                if (y > 700) reachedTop = true
-                                p5.rect(goingRight ? x : x - b.w, 600 - y, b.w, y)
-                                if (goingRight) x += b.w
-                                else x -= b.w
-                                if (x > 600 || x < 0) goingRight = !goingRight
-                            })
-                            if (reachedTop) {
-                                bars = []
-                                p5.background(0)
-                            }
-                            bars.push({
-                                h: p5.random(5, 40),
-                                w: p5.random(20, 60),
-                                r: p5.random(255),
-                                g: p5.random(255),
-                                b: p5.random(255)
-                            })
-                        }
-                    }
-                },
-                {
-                    name: 'Serep Trus',
-                    script: function (p5) {
-                        var step = 20
-                        var x = step
-                        var y = step
-                        var w = 600 - step * 2
-                        var r = 0
-                        p5.setup = _ => {
-                            var canvas = p5.createCanvas(600, 600)
-                            canvas.parent('canvas-container')
-                            p5.frameRate(20)
-                            p5.background(0)
-                            p5.stroke(255)
+                            p5.stroke(255, 0, 0)
+                            p5.strokeWeight(5)
+                            p5.frameRate(30)
                             p5.noFill()
+                            for (var i = 0; i < n * n; i++) {
+                                points.push(30)
+                                growing.push(p5.random(2) < 1)
+                                spds.push(p5.random(0, 3))
+                            }
+                            space = (p5.width - gap * 2) / n
                         }
                         p5.draw = _ => {
-                            p5.rect(x, y, w, w)
-                            // var r = p5.floor(p5.random(4))
-                            if (r === 1) x += step
-                            else if (r === 2) {
-                                x += step
-                                y += step
-                            } else if (r === 3) y += step
-                            r = (r + 1) % 2
-                            w -= step
-                            if (w <= step) {
-                                x = step
-                                y = step
-                                w = 600 - step * 2
-                                p5.background(0)
+                            p5.background(0)
+                            for (var y = 0; y < n; y++) {
+                                for (var x = 0; x < n; x++) {
+                                    var centerx = gap + space * x + space / 2
+                                    var centery = gap + space * y + space / 2
+                                    p5.beginShape()
+                                    var i = y * n + x
+                                    var w = points[i]
+                                    p5.vertex(centerx - w, centery)
+                                    p5.vertex(centerx, centery - w)
+                                    p5.vertex(centerx + w, centery)
+                                    p5.vertex(centerx, centery + w)
+                                    p5.vertex(centerx - w, centery)
+                                    p5.endShape()
+                                    if (x + 1 < n) {
+                                        var wright = points[y * n + x + 1]
+                                        p5.line(centerx + w, centery, centerx + space - wright, centery)
+                                    }
+                                    if (y + 1 < n) {
+                                        var wbot = points[y * n + x + n]
+                                        p5.line(centerx, centery + w, centerx, centery + space - wbot)
+                                    }
+                                    points[i] += spds[i] * (growing[i] ? 1 : -1)
+                                    if (points[i] >= space - 5) growing[i] = false
+                                    if (points[i] <= minw) growing[i] = true
+                                }
                             }
                         }
                     }
