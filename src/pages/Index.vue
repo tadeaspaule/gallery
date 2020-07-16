@@ -44,7 +44,7 @@ export default {
                         var c2y = 350
                         var col = [255, 0, 0]
                         var col2 = [0, 0, 255]
-                        var padding = 160
+                        var padding = 200
                         var i = 0
 
                         p5.setup = _ => {
@@ -53,7 +53,7 @@ export default {
                             p5.background(0)
                             p5.noStroke()
                             p5.fill(255)
-                            p5.frameRate(20)
+                            p5.frameRate(30)
                         }
                         p5.movecenter = _ => {
                             if (cx === c2x) c2x = p5.floor(p5.random(padding, 600 - padding))
