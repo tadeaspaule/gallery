@@ -50,7 +50,7 @@ export default {
                         p5.setup = _ => {
                             var canvas = p5.createCanvas(600, 600)
                             canvas.parent('canvas-container')
-                            p5.background(0)
+                            p5.background(255)
                             p5.noStroke()
                             p5.fill(255)
                             p5.frameRate(30)
@@ -113,7 +113,7 @@ export default {
                             space = (p5.width - gap * 2) / n
                         }
                         p5.draw = _ => {
-                            p5.background(0)
+                            p5.background(255)
                             for (var y = 0; y < n; y++) {
                                 for (var x = 0; x < n; x++) {
                                     var centerx = gap + space * x + space / 2
@@ -159,8 +159,8 @@ export default {
                             var canvas = p5.createCanvas(600, 600)
                             canvas.parent('canvas-container')
                             p5.frameRate(20)
-                            p5.background(0)
-                            p5.stroke(255)
+                            p5.background(255)
+                            p5.stroke(0)
                             p5.noFill()
                             for (var i = 0; i < n; i++) {
                                 var p = {
@@ -186,7 +186,7 @@ export default {
                             }
                         }
                         p5.draw = _ => {
-                            p5.background(0)
+                            p5.background(255)
                             planets.forEach(p => p5.move(p))
                             moons.forEach(m => {
                                 var d = p5.dist(300, 300, m.x, m.y)
@@ -215,8 +215,8 @@ export default {
                             var canvas = p5.createCanvas(600, 600)
                             canvas.parent('canvas-container')
                             p5.frameRate(20)
-                            p5.background(0)
-                            p5.stroke(255)
+                            p5.background(255)
+                            p5.stroke(0)
                             for (var i = 0; i < n; i++) {
                                 var p = {
                                     x: 0,
@@ -244,7 +244,7 @@ export default {
                             }
                         }
                         p5.draw = _ => {
-                            // p5.background(0)
+                            // p5.background(255)
                             // if (growing) factor += factorSpd
                             // else factor -= factorSpd
                             // if (factor >= 1) growing = false
@@ -272,7 +272,6 @@ export default {
 #canvas-container {
     width: 600px;
     height: 600px;
-    background: black;
     margin: 0px 10px;
 }
 .index-outer {
