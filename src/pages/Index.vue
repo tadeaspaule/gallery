@@ -197,6 +197,71 @@ export default {
                     }
                 },
                 {
+                    name: 'Orbit Poly',
+                    script: function (p5) {
+                        var n = 6
+                        var planets = []
+                        var moons = []
+                        var polys = []
+                        var polyOffsets = []
+                        var polySpeeds = []
+                        p5.move = (x) => {
+                            x.x = x.orbitAround.x + x.r * p5.cos(x.rads)
+                            x.y = x.orbitAround.y + x.r * p5.sin(x.rads)
+                            x.rads += x.orbitSpeed
+                            if (x.rads > 6.3) x.rads -= p5.PI * 2
+                        }
+                        p5.setup = _ => {
+                            var canvas = p5.createCanvas(600, 600)
+                            canvas.parent('canvas-container')
+                            p5.frameRate(20)
+                            p5.background(255)
+                            p5.stroke(0)
+                            p5.noFill()
+                            for (var i = 0; i < n; i++) {
+                                var p = {
+                                    x: 0,
+                                    y: 0,
+                                    orbitSpeed: p5.random(0.03, 0.2),
+                                    r: p5.random(30, 250),
+                                    rads: p5.random(0, 6.28),
+                                    orbitAround: { x: 300, y: 300 }
+                                }
+                                var m = {
+                                    x: 0,
+                                    y: 0,
+                                    orbitSpeed: p5.random(0.03, 0.2),
+                                    r: p5.random(10, 45),
+                                    rads: p5.random(0, 6.28),
+                                    orbitAround: p
+                                }
+                                p5.move(p)
+                                p5.move(m)
+                                planets.push(p)
+                                moons.push(m)
+                                polys.push(p5.floor(p5.random(3, 9)))
+                                polyOffsets.push(p5.random(p5.PI))
+                                polySpeeds.push(p5.random(-0.02, 0.02))
+                            }
+                        }
+                        p5.draw = _ => {
+                            p5.background(255)
+                            for (var i = 0; i < n; i++) {
+                                var d = p5.dist(300, 300, moons[i].x, moons[i].y)
+                                p5.beginShape()
+                                for (var deg = 0; deg < 360; deg += (360 / polys[i])) {
+                                    p5.vertex(300 + d * p5.cos(p5.radians(deg) + polyOffsets[i]), 300 + d * p5.sin(p5.radians(deg) + polyOffsets[i]))
+                                }
+                                p5.vertex(300 + d * p5.cos(polyOffsets[i]), 300 + d * p5.sin(polyOffsets[i]))
+                                p5.endShape()
+                                p5.move(planets[i])
+                                p5.move(moons[i])
+                                polyOffsets[i] = (polyOffsets[i] + polySpeeds[i]) % (p5.PI * 2)
+                            }
+                        }
+                    }
+                },
+                {
                     name: 'Just lines',
                     script: function (p5) {
                         var n = 4
