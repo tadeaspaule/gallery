@@ -47,6 +47,7 @@ export default {
     cursor: pointer;
     padding: 4px 0px;
     font-size: 20px;
+    text-transform: lowercase;
 }
 .selected {
     opacity: 1;
