@@ -262,63 +262,53 @@ export default {
                     }
                 },
                 {
-                    name: 'Just lines',
+                    name: 'trickle down',
                     script: function (p5) {
-                        var n = 4
-                        var planets = []
-                        var moons = []
-                        // var growing = true
-                        var factor = 1
-                        // var factorSpd = 0.01
-                        p5.move = (x) => {
-                            x.x = x.orbitAround.x + x.r * p5.cos(x.rads)
-                            x.y = x.orbitAround.y + x.r * p5.sin(x.rads) * factor
-                            x.rads += x.orbitSpeed
-                            if (x.rads > 6.3) x.rads -= p5.PI * 2
+                        var stage = 0
+                        var x = 200
+                        var y = 0
+                        p5.startNew = _ => {
+                            stage = 0
+                            var r = p5.random(50, 256)
+                            var g = p5.random(50, 256)
+                            var b = p5.random(50, 256)
+                            while (r + g + b > 650 || r + g + b < 200) {
+                                r = p5.random(50, 256)
+                                g = p5.random(50, 256)
+                                b = p5.random(50, 256)
+                            }
+                            p5.stroke(r, g, b)
+                            y = 0
+                            x += p5.random(30, 100)
+                            if (x > 600) x -= 600
                         }
                         p5.setup = _ => {
                             var canvas = p5.createCanvas(600, 600)
                             canvas.parent('canvas-container')
-                            p5.frameRate(20)
                             p5.background(255)
-                            p5.stroke(0)
-                            for (var i = 0; i < n; i++) {
-                                var p = {
-                                    x: 0,
-                                    y: 0,
-                                    orbitSpeed: p5.random(0.03, 0.2),
-                                    r: p5.random(30, 100),
-                                    rads: p5.random(0, 6.28),
-                                    orbitAround: { x: 300, y: 300 }
-                                }
-                                var m = {
-                                    x: 0,
-                                    y: 0,
-                                    orbitSpeed: p5.random(0.03, 0.2),
-                                    r: p5.random(60, 150),
-                                    rads: p5.random(0, 6.28),
-                                    orbitAround: p
-                                }
-                                p5.move(p)
-                                p5.move(m)
-                                planets.push(p)
-                                moons.push(m)
-                            }
-                            for (var j = 0; j < n / 2; j++) {
-                                moons[j].partner = moons[j + n / 2]
-                            }
+                            p5.strokeWeight(2)
+                            p5.frameRate(30)
+                            p5.startNew()
                         }
                         p5.draw = _ => {
-                            // p5.background(255)
-                            // if (growing) factor += factorSpd
-                            // else factor -= factorSpd
-                            // if (factor >= 1) growing = false
-                            // else if (factor <= 0.6) growing = true
-                            planets.forEach(p => p5.move(p))
-                            moons.forEach(m => {
-                                if (m.partner) p5.line(m.x, m.y, m.partner.x, m.partner.y)
-                                p5.move(m)
-                            })
+                            if (stage === 0 || stage === 2) {
+                                // going down
+                                var y2 = y + p5.random(5, 15)
+                                p5.line(x, y, x, y2)
+                                y = y2
+                            } else if (stage === 1) {
+                                // going right
+                                var x2 = x + p5.random(30, 80)
+                                p5.line(x, y, x2, y)
+                                x = x2
+                            } else if (stage === 3) {
+                                // going left
+                                var x3 = x - p5.random(30, 80)
+                                p5.line(x, y, x3, y)
+                                x = x3
+                            }
+                            stage = (stage + 1) % 4
+                            if (y > 600) p5.startNew()
                         }
                     }
                 }
