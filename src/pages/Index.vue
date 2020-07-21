@@ -307,11 +307,11 @@ export default {
                                 var red = p5.random(0, 256)
                                 var green = p5.random(0, 256)
                                 var blue = p5.random(0, 256)
-                                while (red + green + blue < 300 || red + green + blue > 750) {
-                                    red = p5.random(0, 256)
-                                    green = p5.random(0, 256)
-                                    blue = p5.random(0, 256)
-                                }
+                                // while (red + green + blue < 300 || red + green + blue > 750) {
+                                //     red = p5.random(0, 256)
+                                //     green = p5.random(0, 256)
+                                //     blue = p5.random(0, 256)
+                                // }
                                 cogs.push({
                                     radius: r,
                                     x: p5.random(r, 600 - r),
