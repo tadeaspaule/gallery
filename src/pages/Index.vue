@@ -34,6 +34,62 @@ export default {
             style: 'centered',
             sketches: [
                 {
+                    name: 'Grid',
+                    script: function (p5) {
+                        var n = 10
+                        var points = []
+                        var spds = []
+                        var growing = []
+                        var minw = 10
+                        var gap = 50
+                        var space = 0
+
+                        p5.setup = _ => {
+                            var canvas = p5.createCanvas(600, 600)
+                            canvas.parent('canvas-container')
+                            p5.stroke(255, 0, 0)
+                            p5.strokeWeight(4)
+                            p5.frameRate(30)
+                            p5.noFill()
+                            for (var i = 0; i < n * n; i++) {
+                                points.push(30)
+                                growing.push(p5.random(2) < 1)
+                                spds.push(p5.random(0, 3))
+                            }
+                            space = (p5.width - gap * 2) / n
+                        }
+                        p5.draw = _ => {
+                            p5.background(255)
+                            for (var y = 0; y < n; y++) {
+                                for (var x = 0; x < n; x++) {
+                                    var centerx = gap + space * x + space / 2
+                                    var centery = gap + space * y + space / 2
+                                    p5.beginShape()
+                                    var i = y * n + x
+                                    var w = points[i]
+                                    p5.vertex(centerx - w, centery)
+                                    p5.vertex(centerx, centery - w)
+                                    p5.vertex(centerx + w, centery)
+                                    p5.vertex(centerx, centery + w)
+                                    p5.vertex(centerx - w, centery)
+                                    p5.endShape()
+                                    if (x + 1 < n) {
+                                        var wright = points[y * n + x + 1]
+                                        p5.line(centerx + w, centery, centerx + space - wright, centery)
+                                    }
+                                    if (y + 1 < n) {
+                                        var wbot = points[y * n + x + n]
+                                        p5.line(centerx, centery + w, centerx, centery + space - wbot)
+                                    }
+                                    points[i] += spds[i] * (growing[i] ? 1 : -1)
+                                    if (points[i] >= space - 8) growing[i] = false
+                                    if (points[i] <= minw) growing[i] = true
+                                }
+                            }
+                        }
+                    }
+                },
+                {
                     name: 'Wormhole',
                     script: function (p5) {
                         var n = 20
@@ -84,62 +140,6 @@ export default {
                             i = (i + 1) % n
                             p5.movecenter()
                             p5.changefill()
-                        }
-                    }
-                },
-                {
-                    name: 'Grid',
-                    script: function (p5) {
-                        var n = 10
-                        var points = []
-                        var spds = []
-                        var growing = []
-                        var minw = 10
-                        var gap = 50
-                        var space = 0
-
-                        p5.setup = _ => {
-                            var canvas = p5.createCanvas(600, 600)
-                            canvas.parent('canvas-container')
-                            p5.stroke(255, 0, 0)
-                            p5.strokeWeight(5)
-                            p5.frameRate(30)
-                            p5.noFill()
-                            for (var i = 0; i < n * n; i++) {
-                                points.push(30)
-                                growing.push(p5.random(2) < 1)
-                                spds.push(p5.random(0, 3))
-                            }
-                            space = (p5.width - gap * 2) / n
-                        }
-                        p5.draw = _ => {
-                            p5.background(255)
-                            for (var y = 0; y < n; y++) {
-                                for (var x = 0; x < n; x++) {
-                                    var centerx = gap + space * x + space / 2
-                                    var centery = gap + space * y + space / 2
-                                    p5.beginShape()
-                                    var i = y * n + x
-                                    var w = points[i]
-                                    p5.vertex(centerx - w, centery)
-                                    p5.vertex(centerx, centery - w)
-                                    p5.vertex(centerx + w, centery)
-                                    p5.vertex(centerx, centery + w)
-                                    p5.vertex(centerx - w, centery)
-                                    p5.endShape()
-                                    if (x + 1 < n) {
-                                        var wright = points[y * n + x + 1]
-                                        p5.line(centerx + w, centery, centerx + space - wright, centery)
-                                    }
-                                    if (y + 1 < n) {
-                                        var wbot = points[y * n + x + n]
-                                        p5.line(centerx, centery + w, centerx, centery + space - wbot)
-                                    }
-                                    points[i] += spds[i] * (growing[i] ? 1 : -1)
-                                    if (points[i] >= space - 5) growing[i] = false
-                                    if (points[i] <= minw) growing[i] = true
-                                }
-                            }
                         }
                     }
                 },
