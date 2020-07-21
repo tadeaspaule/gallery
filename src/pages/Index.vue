@@ -262,6 +262,105 @@ export default {
                     }
                 },
                 {
+                    name: 'not like clockwork',
+                    script: function (p5) {
+                        var n = 6
+                        var planets = []
+                        var moons = []
+                        var cogs = []
+                        p5.move = (x) => {
+                            x.x = x.orbitAround.x + x.r * p5.cos(x.rads)
+                            x.y = x.orbitAround.y + x.r * p5.sin(x.rads)
+                            x.rads += x.orbitSpeed
+                            if (x.rads > 6.3) x.rads -= p5.PI * 2
+                        }
+                        p5.setup = _ => {
+                            var canvas = p5.createCanvas(600, 600)
+                            canvas.parent('canvas-container')
+                            p5.frameRate(30)
+                            p5.background(255)
+                            p5.noFill()
+                            p5.strokeWeight(3)
+                            n = p5.floor(p5.random(3, 7))
+                            var r = p5.random(50, 200)
+                            for (var i = 0; i < n; i++) {
+                                var p = {
+                                    x: 0,
+                                    y: 0,
+                                    orbitSpeed: p5.random(0.03, 0.2),
+                                    r: p5.random(40, 120),
+                                    rads: p5.random(0, 6.28),
+                                    orbitAround: { x: 300, y: 300 }
+                                }
+                                var m = {
+                                    x: 0,
+                                    y: 0,
+                                    orbitSpeed: p5.random(0.03, 0.2),
+                                    r: p5.random(30, 145),
+                                    rads: p5.random(0, 6.28),
+                                    orbitAround: p
+                                }
+                                p5.move(p)
+                                p5.move(m)
+                                planets.push(p)
+                                moons.push(m)
+                                var red = p5.random(0, 256)
+                                var green = p5.random(0, 256)
+                                var blue = p5.random(0, 256)
+                                while (red + green + blue < 300 || red + green + blue > 750) {
+                                    red = p5.random(0, 256)
+                                    green = p5.random(0, 256)
+                                    blue = p5.random(0, 256)
+                                }
+                                cogs.push({
+                                    radius: r,
+                                    x: p5.random(r, 600 - r),
+                                    y: p5.random(r, 600 - r),
+                                    offset: p5.random(2),
+                                    mult: p5.random(1) < 0.5 ? 1 : -1,
+                                    teeth: p5.floor(p5.random(5, 20)),
+                                    teethHeight: r * p5.random(0.1, 0.25),
+                                    r: red,
+                                    g: green,
+                                    b: blue
+                                })
+                            }
+                        }
+                        p5.draw = _ => {
+                            p5.background(255)
+                            for (var i = 0; i < n; i++) {
+                                var d = p5.dist(300, 300, moons[i].x, moons[i].y)
+                                p5.move(planets[i])
+                                p5.move(moons[i])
+                                p5.stroke(cogs[i].r, cogs[i].g, cogs[i].b)
+                                var part = (p5.PI * 2) / cogs[i].teeth
+                                var smallerRadius = (cogs[i].radius - cogs[i].teethHeight)
+                                for (var rads = 0; rads < p5.PI * 2; rads += part) {
+                                    var rads1 = rads + cogs[i].offset * cogs[i].mult
+                                    var rads2 = rads1 + part / 2
+                                    var rads3 = rads2 + part / 2
+                                    p5.arc(cogs[i].x, cogs[i].y, cogs[i].radius * 2, cogs[i].radius * 2, rads1, rads2)
+                                    p5.line(
+                                        cogs[i].x + cogs[i].radius * p5.cos(rads2),
+                                        cogs[i].y + cogs[i].radius * p5.sin(rads2),
+                                        cogs[i].x + smallerRadius * p5.cos(rads2),
+                                        cogs[i].y + smallerRadius * p5.sin(rads2)
+                                    )
+                                    p5.arc(cogs[i].x, cogs[i].y, smallerRadius * 2, smallerRadius * 2, rads2, rads2 + part / 2)
+                                    p5.line(
+                                        cogs[i].x + smallerRadius * p5.cos(rads3),
+                                        cogs[i].y + smallerRadius * p5.sin(rads3),
+                                        cogs[i].x + cogs[i].radius * p5.cos(rads3),
+                                        cogs[i].y + cogs[i].radius * p5.sin(rads3)
+                                    )
+                                }
+                                cogs[i].offset += p5.pow(0.004 * (600 / d), 1.2)
+                                if (cogs[i].offset > 7) cogs[i].offset -= p5.PI * 2
+                            }
+                        }
+                    }
+                },
+                {
                     name: 'trickle down',
                     script: function (p5) {
                         var stage = 0
