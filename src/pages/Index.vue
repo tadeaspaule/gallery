@@ -6,6 +6,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import P5 from 'p5'
 import CenteredLayout from '../gallery-layouts/CenteredLayout.vue'
 export default {
@@ -33,6 +34,89 @@ export default {
             selected: 0,
             style: 'centered',
             sketches: [
+                {
+                    name: 'Twisty',
+                    script: function (p5) {
+                        var rads = 0;
+                        var m = true;
+                        var spd = 5.0;
+                        var w; var h; var r = 100;
+                        var squish = 0.5;
+                        var q = p5.PI / 4;
+                        var yGap = 200; var y1; var y2;
+                        var cols = [[0,0,0],[0,0,0],[0,0,0],[0,0,0]]
+
+                        p5.setup = _ => {
+                            var canvas = p5.createCanvas(600, 600)
+                            canvas.parent('canvas-container')
+                            p5.background(255);
+                            h = p5.height; w = p5.width;
+                            y1 = yGap; y2 = p5.height - yGap;
+                            p5.frameRate(20);
+                            for (var i = 0; i < 4; i++) {
+                                for (var j = 0; j < 3; j++) cols[i][j] = p5.random(80,255);
+                            }
+                        }
+
+                        p5.draw = _ => {
+                            p5.background(255);
+                            drawBox();
+                            var s = (spd + 5 * p5.abs(rads)) * 0.004;
+                            if (m) rads += s;
+                            else rads -= s;
+                            if (m && rads > q*2) m = !m;
+                            else if (!m && rads < -q*2) m = !m;
+                        }
+
+                        var drawQuad = (qRads) => {
+                            var i = Math.round(qRads / (p5.PI/2)) % 4;
+                            p5.fill(cols[i][0],cols[i][1],cols[i][2]);
+                            p5.stroke(0);
+                            p5.quad(
+                                w/2+r*p5.cos(qRads+rads),
+                                y1+squish*r*p5.sin(qRads+rads),
+                                w/2+r*p5.cos(qRads+rads+q*2),
+                                y1+squish*r*p5.sin(qRads+rads+q*2),
+                                w/2+r*p5.cos(qRads+q*2),
+                                y2+squish*r*p5.sin(qRads+q*2),
+                                w/2+r*p5.cos(qRads),
+                                y2+squish*r*p5.sin(qRads)
+                            );
+                        }
+
+                        var redPoint = (pRads,radius) => {
+                            p5.fill(255,0,0);
+                            p5.noStroke();
+                            p5.ellipse(w/2+radius*p5.cos(pRads),h/2+radius*squish*p5.sin(pRads),5,5);
+                        }
+
+                        var drawBox = () => {
+                            p5.stroke(0);
+                            p5.noFill();
+                            var prad = r*1.5;
+                            p5.ellipse(w/2,h/2,prad*2,prad*2*squish);
+                            redPoint(p5.PI*1.5+rads,prad);
+                            redPoint((rads > 0 ? p5.PI : 0) +rads,prad); 
+                            var off = rads > 0 ? 0 : p5.PI/2;
+                            // draw back quad
+                            drawQuad(p5.PI+off);
+                            // draw side quads
+                            drawQuad(p5.PI*1.5+off);
+                            drawQuad(p5.PI*0.5+off);
+                            // draw front quad
+                            drawQuad(0+off);
+                            // draw top
+                            // draw front point arc
+                            p5.noFill();
+                            p5.stroke(0);
+                            p5.arc(w/2,h/2,prad*2,prad*2*squish,0,p5.PI);
+                            // draw front red points
+                            redPoint(p5.PI*0.5+rads,prad);
+                            redPoint((rads > 0 ? 0 : p5.PI) +rads,prad); 
+                        }
+                            
+                    }
+                },
                 {
                     name: 'Grid',
                     script: function (p5) {
